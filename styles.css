@@ -1400,7 +1400,14 @@ input:checked + .slider:before {
 }
 
 .pulse-animation {
-  animation: pulse 2s infinite;
+  animation: pulse-safe 2s infinite;
+}
+
+/* New pulse animation using brightness instead of transform */
+@keyframes pulse-safe {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.15); }
+  100% { filter: brightness(1); }
 }
 
 /* Responsive */
@@ -1922,3 +1929,8 @@ input:checked + .slider:before {
   display: inline-block;
 }
 
+/* Prevent flipping or unwanted transform on Start Playing button */
+#start-auth {
+  transform: none !important;
+  animation: pulse-safe 2s infinite !important;
+}
