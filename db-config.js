@@ -2,80 +2,75 @@ const mysql = require('mysql2/promise');
 const fs = require('fs');
 const path = require('path');
 
-// Configuration de la base de données
+// Database configuration
 const dbConfig = {
-  host: 'localhost',
+  host: '127.0.0.1',    // already fixed
   user: 'root',
-  password: '', // Mot de passe par défaut pour XAMPP
+  password: 'akintola',         
   database: 'gameverse',
-  port: 3307,
-  // Ajouter cette option pour résoudre le problème d'authentification
-  authPlugins: {
-    mysql_native_password: () => () => Buffer.from('', 'utf-8')
-  }
+  port: 3306,
+  
 };
 
-// Fonction pour initialiser la base de données
+// Function to initialize the database
 async function initDatabase() {
   try {
-    console.log('Initialisation de la base de données...');
-    
-    // Créer une connexion sans spécifier de base de données
+    console.log('Initializing the database...');
+
+    // Connect without selecting the database yet
     const connection = await mysql.createConnection({
       host: dbConfig.host,
       user: dbConfig.user,
       password: dbConfig.password,
       port: dbConfig.port,
-      // Ajouter cette option pour résoudre le problème d'authentification
       authPlugins: {
         mysql_native_password: () => () => Buffer.from('', 'utf-8')
       }
     });
-    
-    // Créer la base de données si elle n'existe pas
+
+    // Create the database if it doesn't exist
     await connection.query(`CREATE DATABASE IF NOT EXISTS ${dbConfig.database}`);
-    
-    // Utiliser la base de données
+
+    // Switch to the target database
     await connection.query(`USE ${dbConfig.database}`);
-    
-    // Lire et exécuter le script SQL pour créer les tables
+
+    // Read and execute the database.sql file
     const sqlScript = fs.readFileSync(path.join(__dirname, 'database.sql'), 'utf8');
     const statements = sqlScript.split(';').filter(statement => statement.trim() !== '');
-    
+
     for (const statement of statements) {
       await connection.query(statement);
     }
-    
-    console.log('Base de données initialisée avec succès!');
+
+    console.log('Database initialized successfully!');
     await connection.end();
     return true;
   } catch (error) {
-    console.error('Erreur lors de l\'initialisation de la base de données:', error);
+    console.error('Error initializing the database:', error);
     return false;
   }
 }
 
-// Fonction pour tester la connexion à la base de données
+// Function to test the MySQL connection
 async function testConnection() {
   try {
     const connection = await mysql.createConnection({
       ...dbConfig,
-      // Ajouter cette option pour résoudre le problème d'authentification
       authPlugins: {
         mysql_native_password: () => () => Buffer.from('', 'utf-8')
       }
     });
-    
-    console.log('Connexion à la base de données MySQL réussie!');
+
+    console.log('Successfully connected to MySQL!');
     await connection.end();
     return true;
   } catch (error) {
-    console.error('Erreur de connexion à la base de données:', error);
+    console.error('Error connecting to the database:', error);
     return false;
   }
 }
 
-// Fonction pour créer un pool de connexions
+// Function to create a connection pool (for handling many requests)
 async function createPool() {
   try {
     const pool = mysql.createPool({
@@ -84,14 +79,14 @@ async function createPool() {
       connectionLimit: 10,
       queueLimit: 0
     });
-    
-    // Vérifier la connexion
+
+    // Test a connection
     const connection = await pool.getConnection();
     connection.release();
-    
+
     return pool;
   } catch (error) {
-    console.error('Erreur de connexion à la base de données:', error);
+    console.error('Error connecting to the database:', error);
     throw error;
   }
 }
