@@ -1671,25 +1671,37 @@ function updateStats() {
   localStorage.setItem("losses", stats.losses)
 }
 
-// Sélectionner un jeu
+// Select a game
 function selectGame(game) {
-  console.log(`Jeu sélectionné: ${game}`)
+  console.log(`Jeu sélectionné: ${game}`);
 
-  // Activer le jeu de dames
-  if (game === "checkers") {
-    currentGame = game
-    document.querySelector(".game-selection").style.display = "none"
-    document.getElementById("mode-selection").style.display = "block"
-    playSound("click")
-    return
+  // ✅ Handle Rock Paper Scissors separately
+  if (game === "rock-paper-scissors") {
+    currentGame = game;
+    document.querySelector(".game-selection").style.display = "none";
+    document.getElementById("game-title").innerText = "Rock Paper Scissors";
+    document.getElementById("game-container").style.display = "block";
+    document.getElementById("rps-game").style.display = "block";
+    playSound("click");
+    return; // prevent fall-through
   }
 
-  // Code existant pour les autres jeux
-  currentGame = game
-  document.querySelector(".game-selection").style.display = "none"
-  document.getElementById("mode-selection").style.display = "block"
-  playSound("click")
+  // ✅ Handle checkers (as you already had)
+  if (game === "checkers") {
+    currentGame = game;
+    document.querySelector(".game-selection").style.display = "none";
+    document.getElementById("mode-selection").style.display = "block";
+    playSound("click");
+    return;
+  }
+
+  // ✅ Fallback for other games (Tic-Tac-Toe, Connect Four, etc.)
+  currentGame = game;
+  document.querySelector(".game-selection").style.display = "none";
+  document.getElementById("mode-selection").style.display = "block";
+  playSound("click");
 }
+
 
 // Retourner à la sélection de jeu
 function backToGameSelection() {
@@ -3818,3 +3830,69 @@ document.addEventListener("DOMContentLoaded", () => {
 `
   document.head.appendChild(styleElement)
 })
+
+function playRPS(playerChoice) {
+  const choices = ['rock', 'paper', 'scissors'];
+  const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+
+  let resultMessage = `You chose ${playerChoice.toUpperCase()} — Computer chose ${computerChoice.toUpperCase()}. `;
+
+  if (playerChoice === computerChoice) {
+    resultMessage += "It's a draw!";
+  } else if (
+    (playerChoice === 'rock' && computerChoice === 'scissors') ||
+    (playerChoice === 'paper' && computerChoice === 'rock') ||
+    (playerChoice === 'scissors' && computerChoice === 'paper')
+  ) {
+    resultMessage += "You win! 🎉";
+  } else {
+    resultMessage += "You lose! 😢";
+  }
+
+  document.getElementById('rps-result').innerText = resultMessage;
+}
+// ========== Rock Paper Scissors Game ==========
+const choices = ["rock", "paper", "scissors"];
+const rpsButtons = document.querySelectorAll(".rps-btn");
+const rpsResult = document.getElementById("rps-result");
+const rpsStatus = document.getElementById("rps-status");
+const rpsUserChoice = document.getElementById("rps-user-choice");
+const rpsCpuChoice = document.getElementById("rps-cpu-choice");
+
+rpsButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const userChoice = button.getAttribute("data-choice");
+    const cpuChoice = choices[Math.floor(Math.random() * 3)];
+
+    // Display choices
+    rpsUserChoice.textContent = formatHand(userChoice);
+    rpsCpuChoice.textContent = formatHand(cpuChoice);
+
+    // Determine result
+    const result = getRpsResult(userChoice, cpuChoice);
+    rpsResult.textContent = result;
+
+    // Update status visually
+    rpsStatus.className = "rps-status";
+    rpsStatus.classList.add(result.toLowerCase());
+  });
+});
+
+function formatHand(choice) {
+  if (choice === "rock") return "✊";
+  if (choice === "paper") return "✋";
+  if (choice === "scissors") return "✌️";
+  return "?";
+}
+
+function getRpsResult(player, cpu) {
+  if (player === cpu) return "Draw";
+  if (
+    (player === "rock" && cpu === "scissors") ||
+    (player === "paper" && cpu === "rock") ||
+    (player === "scissors" && cpu === "paper")
+  ) {
+    return "Win";
+  }
+  return "Lose";
+}
