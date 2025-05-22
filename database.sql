@@ -1,4 +1,4 @@
--- Création de la table des utilisateurs
+-- User creation table
 CREATE TABLE IF NOT EXISTS users (
   id VARCHAR(36) PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE,
@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Création de la table des statistiques
+-- User statistics table
 CREATE TABLE IF NOT EXISTS user_stats (
   user_id VARCHAR(36) PRIMARY KEY,
   wins INT DEFAULT 0,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS user_stats (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Création de la table des succès
+-- Achievements table
 CREATE TABLE IF NOT EXISTS achievements (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS achievements (
   icon VARCHAR(50)
 );
 
--- Création de la table des succès débloqués par les utilisateurs
+-- Table for achievements unlocked by users
 CREATE TABLE IF NOT EXISTS user_achievements (
   user_id VARCHAR(36),
   achievement_id INT,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS user_achievements (
   FOREIGN KEY (achievement_id) REFERENCES achievements(id) ON DELETE CASCADE
 );
 
--- Création de la table de l'historique des parties
+-- Game history table
 CREATE TABLE IF NOT EXISTS game_history (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id VARCHAR(36),
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS game_history (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Création de la table des tokens actifs
+-- Active tokens table
 CREATE TABLE IF NOT EXISTS active_tokens (
   token VARCHAR(255) PRIMARY KEY,
   user_id VARCHAR(36) NOT NULL,
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS active_tokens (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Insertion des succès par défaut
+-- Insert default achievements
 INSERT IGNORE INTO achievements (id, name, description, icon) VALUES
-(1, 'Première Victoire', 'Gagnez votre première partie', '🏆'),
-(2, 'Sur une lancée', 'Gagnez 3 parties d\'affilée', '🔥'),
-(3, 'Maître du jeu', 'Atteignez le niveau 10', '🌟');
+(1, 'First Victory', 'Win your first game', '🏆'),
+(2, 'On a Streak', 'Win 3 games in a row', '🔥'),
+(3, 'Game Master', 'Reach level 10', '🌟');
