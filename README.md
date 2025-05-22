@@ -80,10 +80,10 @@ GameVerse is a modern, interactive multiplayer gaming platform that brings class
 ## 🎯 How to Play
 
 ### Creating an Account
-1. Click "Commencer à jouer" on the welcome screen
-2. Select "S'inscrire" to create a new account
+1. Click "Start" on the welcome screen
+2. Select "Sign up" to create a new account
 3. Fill in your details and select an avatar
-4. Click "S'inscrire" to complete registration
+4. Click "Signup" to complete registration
 
 ### Starting a Game
 1. Choose a game from the game selection menu
@@ -130,4 +130,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-Developed with ❤️ by [joshua and diagne mouhamed]
+Developed with  by [Joshua Akibo and Mouhamed Diagne ]
